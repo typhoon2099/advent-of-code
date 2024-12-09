@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub fn part1() -> usize {
     let (list1, list2) = list_data();
 
@@ -15,7 +17,17 @@ pub fn part1() -> usize {
 }
 
 pub fn part2() -> usize {
-    4
+    let (list1, list2) = list_data();
+    let mut totals = HashMap::new();
+
+    for value in list2.iter() {
+        totals.entry(value).and_modify(|total| *total += 1).or_insert(1);
+    }
+
+    list1
+        .iter()
+        .map(|value| value * *totals.get(value).unwrap_or(&0) as usize)
+        .sum()
 }
 
 fn list_data() -> (Vec<usize>, Vec<usize>) {
@@ -26,7 +38,6 @@ fn list_data() -> (Vec<usize>, Vec<usize>) {
     let mut list2 = vec![];
 
     for line in lines.into_iter() {
-        println!("{}", line);
         let numbers: Vec<usize> = line.split("   ").map(|i| i.parse().unwrap()).collect();
 
         list1.push(*numbers.first().unwrap());
@@ -46,5 +57,10 @@ mod tests {
     #[test]
     fn test_part1() {
         assert_eq!(part1(), 1938424);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(), 22014209);
     }
 }
